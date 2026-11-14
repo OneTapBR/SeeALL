@@ -22,6 +22,62 @@
   const pl = (n, um, varios) => `${fmt(n)} ${n === 1 ? um : varios}`;
   const titulo = s => s.toLowerCase().replace(/(^|\s|-)(\p{L})/gu, (m, a, b) => a + b.toUpperCase()).replace(/\b(Da|De|Do|Dos|Das|E)\b/g, w => w.toLowerCase());
 
+  /* animações de entrada: só com JS ativo e se a pessoa não pediu menos movimento */
+  const semMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const RX_INTEIRO = /^\d{1,3}(\.\d{3})*%?$/;
+  function contar(raiz) {
+    raiz.querySelectorAll(".n, .votos-num strong, .rep-n, .trio b, .qt, .prefeito .nums b").forEach(el => {
+      const no = el.firstChild;
+      if (!no || no.nodeType !== 3 || !RX_INTEIRO.test(no.nodeValue.trim())) return;
+      const txt = no.nodeValue.trim(), pct = txt.endsWith("%") ? "%" : "", alvo = +txt.replace(/\D/g, ""), t0 = performance.now(), dur = 900;
+      const passo = t => {
+        const p = Math.min((t - t0) / dur, 1);
+        no.nodeValue = fmt(Math.round(alvo * (1 - Math.pow(1 - p, 3)))) + pct;
+        if (p < 1) requestAnimationFrame(passo); else no.nodeValue = txt;
+      };
+      requestAnimationFrame(passo);
+    });
+  }
+  const olho = !semMovimento && "IntersectionObserver" in window
+    ? new IntersectionObserver(es => es.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("visto");
+        contar(e.target);
+        olho.unobserve(e.target);
+        setTimeout(() => e.target.classList.add("pronto"), 1400);   // depois da entrada, some o atraso em cascata
+      }), { rootMargin: "0px 0px -6% 0px" })
+    : null;
+  function revelar(seletor) {
+    if (!olho) return;
+    const porPai = new Map();
+    document.querySelectorAll(seletor).forEach(el => {
+      if (el.classList.contains("revela") || el.closest(".folha")) return;
+      const i = porPai.get(el.parentElement) || 0;
+      porPai.set(el.parentElement, i + 1);
+      el.style.setProperty("--i", Math.min(i, 10));
+      el.classList.add("revela");
+      olho.observe(el);
+    });
+    setTimeout(conferir, 300);
+  }
+  // rede de segurança: se o observador não disparar (aba em segundo plano, navegador antigo),
+  // a rolagem revela pelo cálculo de posição, para nada ficar invisível
+  let conferindo = false;
+  const conferir = () => {
+    conferindo = false;
+    document.querySelectorAll(".revela:not(.visto)").forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.width && r.top < innerHeight * 0.96) {   // na tela ou já acima dela
+        el.classList.add("visto");
+        contar(el);
+        olho.unobserve(el);
+        setTimeout(() => el.classList.add("pronto"), 1400);
+      }
+    });
+  };
+  if (olho) ["scroll", "resize"].forEach(ev => addEventListener(ev, () => { if (!conferindo) { conferindo = true; setTimeout(conferir, 80); } }, { passive: true }));
+  const REVELAVEIS =".bloco-cab, .barra, .cat, .lt, .legenda, .painel, .rep, .ver, .contador, .prefeito, #temas .tema-l, .frase";
+
   let R, F = null, temFinancas = false, porId, ANO, HOJE, promDocs = null;
   const reais = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   const curto = v => v >= 1e9 ? `R$ ${dec(v / 1e9)} bi` : v >= 1e6 ? `R$ ${dec(v / 1e6)} mi` : v >= 1e3 ? `R$ ${fmt(Math.round(v / 1e3))} mil` : reais(v);
@@ -63,7 +119,8 @@
     porId = Object.fromEntries(R.vereadores.map(v => [v.id, v]));
     R.vereadores.forEach(v => { v.total = total(v.cats); v.apelido = titulo(v.nome); });
     cidade(); hero(); categorias(); tempo(); votacoes(); ruas(); repetidos(); temas(); prefeitura(); presenca(); grade(); rota();
-    if (temFinancas && !R.legislatura.encerrada) fetch("data/financas.json", { cache: "no-cache" }).then(r => r.json()).then(f => { F = f; contador(); dinheiro(); rota(); }).catch(() => {});
+    revelar(REVELAVEIS);
+    if (temFinancas && !R.legislatura.encerrada) fetch("data/financas.json", { cache: "no-cache" }).then(r => r.json()).then(f => { F = f; contador(); dinheiro(); revelar(REVELAVEIS); rota(); }).catch(() => {});
   }).catch(e => {
     console.error(e);
     $("#atualizado").textContent = "Não foi possível carregar os dados";
@@ -123,7 +180,7 @@
         ? (dup || ws[0].endsWith(".") ? ws[0] + " " + ws[ws.length - 1] : ws[0])
         : ws.length <= 2 ? v.apelido : (/^(do|da|de|dos|das|la)$/i.test(ws[1]) ? ws.slice(0, 3).join(" ") : ws[0] + " " + ws[ws.length - 1]);
       const lx = Math.cos(ang) * 112, ly = Math.sin(ang) * 112;
-      return `<g class="blip" tabindex="0" role="link" data-id="${v.id}" aria-label="${esc(v.apelido)}: ${pct}% homenagens">
+      return `<g class="blip" style="--i:${i}" tabindex="0" role="link" data-id="${v.id}" aria-label="${esc(v.apelido)}: ${pct}% homenagens">
         <line x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${(Math.cos(ang) * 106).toFixed(1)}" y2="${(Math.sin(ang) * 106).toFixed(1)}"/>
         <circle class="halo" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8"/>
         <circle class="pt" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.6"/>
@@ -161,7 +218,7 @@
       const ref = referencia ? `<b class="lt-ref" style="bottom:${(referencia[i] / teto * 100).toFixed(2)}%"></b>` : "";
       const det = ORDEM.map((c, k) => series[k][i] ? `${CATS[c].curto}: ${series[k][i]}` : "").filter(Boolean).join(", ");
       const rot = +m.slice(5, 7) === 1 ? m.slice(0, 4) : (+m.slice(5, 7) - 1) % passo === 0 ? MESES[+m.slice(5, 7) - 1] : "";
-      return `<${tag} class="lt-col${+m.slice(5, 7) === 1 ? " ano" : ""}" ${clicavel ? `type="button" data-m="${m}"` : ""} title="${mesNome(m)}: ${fmt(somas[i])} documentos${det ? ` (${det})` : ""}${referencia ? `. Média da Câmara: ${dec(referencia[i])}` : ""}" aria-label="${mesNome(m)}: ${fmt(somas[i])} documentos">
+      return `<${tag} class="lt-col${+m.slice(5, 7) === 1 ? " ano" : ""}" style="--k:${i}" ${clicavel ? `type="button" data-m="${m}"` : ""} title="${mesNome(m)}: ${fmt(somas[i])} documentos${det ? ` (${det})` : ""}${referencia ? `. Média da Câmara: ${dec(referencia[i])}` : ""}" aria-label="${mesNome(m)}: ${fmt(somas[i])} documentos">
         <span class="lt-pilha">${partes}${ref}</span><span class="lt-rot">${rot}</span></${tag}>`;
     }).join("") + `</div>`;
   }

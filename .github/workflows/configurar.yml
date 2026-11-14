@@ -1,0 +1,68 @@
+name: Configurar minha cidade
+
+# Para quem copiou o projeto: informe o endereço do sistema da sua câmara e este
+# fluxo descobre o resto, grava o cidade.json e já dispara a primeira publicação.
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Endereço do sistema da câmara (ex.: https://suacidade.siscam.com.br)"
+        required: true
+      uf:
+        description: "Sigla do estado (ex.: SP)"
+        required: true
+      nome:
+        description: "Nome da cidade (deixe vazio para descobrir sozinho)"
+        required: false
+      dominio:
+        description: "Domínio próprio, se tiver (ex.: radarminhacidade.com.br)"
+        required: false
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  configurar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scraper/requirements.txt
+      - run: pip install -r scraper/requirements.txt
+
+      - name: Descobrir o sistema e gravar cidade.json
+        env:
+          URL: ${{ inputs.url }}
+          UF: ${{ inputs.uf }}
+          NOME: ${{ inputs.nome }}
+          DOMINIO: ${{ inputs.dominio }}
+        run: |
+          set -- "$URL" --uf "$UF" --dominio "$DOMINIO"
+          if [ -n "$NOME" ]; then set -- "$@" --nome "$NOME"; fi
+          python scraper/configurar.py "$@"
+          python - <<'EOF'
+          import json, os
+          c = json.load(open("cidade.json", encoding="utf-8"))
+          c["repositorio"] = f"https://github.com/{os.environ['GITHUB_REPOSITORY']}"
+          json.dump(c, open("cidade.json", "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+          EOF
+
+      - name: Salvar e trocar os dados pelos da nova cidade
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "radar-bot@users.noreply.github.com"
+          git rm -r -q --ignore-unmatch dados
+          git add cidade.json
+          git commit -m "Configura a cidade: $(python -c "import json;c=json.load(open('cidade.json',encoding='utf-8'));print(c['nome']+'-'+c['uf'])")"
+          git push
+
+      - name: Disparar a primeira coleta e publicação
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run atualizar.yml -f completa=true

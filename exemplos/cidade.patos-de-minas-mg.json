@@ -1,0 +1,12 @@
+{
+  "nome": "Patos de Minas",
+  "uf": "MG",
+  "slug": "patos-de-minas-mg",
+  "titulo_site": "Radar Patos de Minas",
+  "sistema": "sapl",
+  "url_base": "https://sapl.patosdeminas.mg.leg.br",
+  "posse_inicial": "2025-01-01",
+  "dominio": "",
+  "codigos_tipos": {},
+  "repositorio": "https://github.com/OneTapBR/SeeALL"
+}

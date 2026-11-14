@@ -1,0 +1,40 @@
+{
+  "nome": "Rio Claro",
+  "uf": "SP",
+  "slug": "rio-claro-sp",
+  "titulo_site": "Radar Rio Claro",
+  "sistema": "siscam",
+  "url_base": "https://rioclaro.siscam.com.br",
+  "posse_inicial": "2025-01-01",
+  "dominio": "",
+  "codigos_tipos": {
+    "141": "Indicação",
+    "142": "Moção",
+    "137": "Projeto de Decreto Legislativo",
+    "139": "Projeto de Emenda à Lei Orgânica",
+    "135": "Projeto de Lei",
+    "136": "Projeto de Lei Complementar",
+    "138": "Projeto de Resolução",
+    "140": "Requerimento"
+  },
+  "siscam": {
+    "modulo": 8,
+    "id_proposituras": 80,
+    "id_subdocumentos": 87,
+    "tipo_resposta": 130,
+    "tipo_veto": 131,
+    "tipo_ata": 530
+  },
+  "mesclar_autores": {
+    "2092": 68
+  },
+  "prazo_resposta_dias": 30,
+  "repositorio": "https://github.com/OneTapBR/SeeALL",
+  "tce_sp": "rio-claro",
+  "prefeito": {
+    "nome": "",
+    "partido": "",
+    "foto": ""
+  },
+  "subsidios": {}
+}

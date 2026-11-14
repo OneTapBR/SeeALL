@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Como fazer o radar da sua cidade</title>
+<meta name="description" content="Passo a passo para publicar, de graça e sem programar, um radar da Câmara Municipal da sua cidade.">
+<meta name="theme-color" content="#1F4FD8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%231F4FD8'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23fff' stroke-width='2'/%3E%3Ccircle cx='21' cy='10' r='3' fill='%23F5B700'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Public+Sans:ital,wght@0,400..700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .guia { max-width: 46rem; margin: 0 auto; padding: clamp(2rem, 6vw, 4rem) 0 2rem; }
+  .guia h1 { font: 850 clamp(2rem, 5vw, 3.2rem)/1 var(--f-display); font-stretch: 116%; letter-spacing: -.03em; margin: 0 0 1rem; text-wrap: balance; }
+  .guia h2 { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--linha); }
+  .guia h3 { margin-top: 2rem; }
+  .guia p, .guia li { max-width: 40rem; }
+  .guia li { margin-bottom: .4rem; }
+  .passos { list-style: none; padding: 0; margin: 2rem 0; counter-reset: p; display: grid; gap: 1rem; }
+  .passos > li { counter-increment: p; background: var(--superficie); border: 1px solid var(--linha); border-radius: var(--raio-g);
+    padding: 1.25rem 1.25rem 1.25rem 4.25rem; position: relative; max-width: none; margin: 0; }
+  .passos > li::before { content: counter(p); position: absolute; left: 1.15rem; top: 1.1rem; width: 2.2rem; height: 2.2rem; border-radius: 50%;
+    background: var(--azul); color: var(--superficie); font: 850 1.1rem/2.2rem var(--f-display); text-align: center; }
+  .passos strong.t { display: block; font: 800 1.15rem var(--f-display); margin-bottom: .3rem; }
+  .passos p { margin: .4rem 0 0; }
+  .tela { margin: .9rem 0 0; border: 1px solid var(--linha); border-radius: var(--raio-p); background: var(--papel); padding: .8rem 1rem;
+    font-size: .88rem; display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+  .tela .bt { display: inline-block; padding: .3rem .8rem; border-radius: 6px; background: #1f883d; color: #fff; font-weight: 600; white-space: nowrap; }
+  .tela .bt.c { background: var(--superficie); color: var(--tinta); border: 1px solid var(--linha); }
+  .tela .seta { color: var(--tinta-2); }
+  code { font: .88em ui-monospace, SFMono-Regular, Consolas, monospace; background: var(--linha); padding: .1em .35em; border-radius: 5px; overflow-wrap: anywhere; }
+  pre { background: var(--superficie); border: 1px solid var(--linha); border-radius: var(--raio-p); padding: 1rem; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  pre code { background: none; padding: 0; }
+  .guia .tabela td { font: 400 .93rem var(--f-texto); white-space: normal; vertical-align: top; }
+  .guia .tabela th { white-space: nowrap; vertical-align: top; }
+  .aviso { background: color-mix(in srgb, var(--ambar) 18%, var(--superficie)); border-left: 6px solid var(--ambar); border-radius: 0 var(--raio-p) var(--raio-p) 0; padding: .9rem 1.1rem; }
+</style>
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<header class="topo">
+  <a class="marca" href="../" aria-label="Voltar para o radar">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" /><circle cx="16" cy="16" r="7.5" /><circle class="b" cx="21.5" cy="9.5" r="2.6" /></svg>
+    <span id="marca">Radar da Câmara</span>
+  </a>
+  <div class="topo-acoes">
+    <a class="link" href="../" style="text-decoration:none">Voltar para o radar</a>
+    <button class="tema" id="tema" type="button" aria-label="Alternar tema claro ou escuro">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="sol" d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.66-5.66 1.41-1.41M4.93 19.07l1.41-1.41m11.32 0 1.41 1.41M4.93 4.93l1.41 1.41M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/><path class="lua" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="conteudo">
+<article class="guia">
+  <h1>Faça o radar da sua cidade em 10 minutos.</h1>
+  <p class="lead">Este site é código aberto e roda de graça. Você não precisa programar nem pagar servidor: só de uma conta no GitHub e do endereço do sistema da sua Câmara.</p>
+
+  <h3>Antes: a sua Câmara usa um destes sistemas?</h3>
+  <p>O radar lê dois sistemas legislativos, usados por centenas de câmaras:</p>
+  <ul>
+    <li><strong>SISCAM</strong> (SINO Informática): o endereço costuma ser <code>suacidade.siscam.com.br</code> e o rodapé diz "SINO Informática".</li>
+    <li><strong>SAPL</strong> (Interlegis): o endereço costuma ser <code>sapl.suacidade.uf.leg.br</code>.</li>
+  </ul>
+  <p>Procure no site da Câmara por "proposituras", "matérias legislativas" ou "processo legislativo" e veja para onde o link leva. Se for outro sistema, veja <a href="#outro-sistema">o fim desta página</a>.</p>
+
+  <ol class="passos">
+    <li>
+      <strong class="t">Copie o projeto</strong>
+      Entre na <span id="repo">página do projeto no GitHub (peça o endereço a quem publicou este site)</span>, clique em <b>Use this template</b> e depois em <b>Create a new repository</b>. Dê um nome (por exemplo <code>radar-minhacidade</code>), deixe como <b>Public</b> e confirme.
+      <div class="tela" aria-hidden="true"><span class="bt">Use this template ▾</span><span class="seta">→</span><span class="bt c">Create a new repository</span><span class="seta">→</span><span class="bt c">◉ Public</span><span class="seta">→</span><span class="bt">Create repository</span></div>
+    </li>
+    <li>
+      <strong class="t">Ligue a publicação</strong>
+      No seu repositório novo, abra <b>Settings</b>, depois <b>Pages</b> no menu da esquerda. Em <b>Build and deployment</b>, no campo <b>Source</b>, escolha <b>GitHub Actions</b>.
+      <div class="tela" aria-hidden="true"><span class="bt c">⚙ Settings</span><span class="seta">→</span><span class="bt c">Pages</span><span class="seta">→</span><span>Source:</span><span class="bt c">GitHub Actions ▾</span></div>
+    </li>
+    <li>
+      <strong class="t">Diga qual é a sua cidade</strong>
+      Abra a aba <b>Actions</b>. Se aparecer um aviso pedindo para habilitar os fluxos, confirme. Na lista da esquerda, clique em <b>Configurar minha cidade</b>, depois em <b>Run workflow</b>. Cole o endereço do sistema da Câmara, digite a sigla do estado e clique no botão verde.
+      <div class="tela" aria-hidden="true"><span class="bt c">▶ Actions</span><span class="seta">→</span><span class="bt c">Configurar minha cidade</span><span class="seta">→</span><span class="bt c">Run workflow ▾</span><span class="seta">→</span><span class="bt">Run workflow</span></div>
+      <p>O robô descobre sozinho qual é o sistema, quais são os tipos de documento e o nome da cidade.</p>
+    </li>
+    <li>
+      <strong class="t">Espere a primeira coleta</strong>
+      A configuração dispara sozinha o fluxo <b>Atualizar dados e publicar</b>. A primeira vez lê tudo desde a posse e leva de 5 a 15 minutos. Quando a bolinha ficar verde, o site está no ar em <code>https://SEU_USUARIO.github.io/NOME_DO_REPOSITORIO/</code>.
+    </li>
+  </ol>
+
+  <p class="aviso"><strong>Pronto.</strong> Daí em diante o site se atualiza sozinho todo dia de manhã. Você não precisa fazer mais nada.</p>
+
+  <h3>Quer ajustar?</h3>
+  <ul>
+    <li><strong>Nome do site e outros detalhes:</strong> edite o arquivo <code>cidade.json</code> na raiz do repositório (o lápis no canto do arquivo, no próprio GitHub).</li>
+    <li><strong>Domínio próprio:</strong> preencha <code>"dominio"</code> no <code>cidade.json</code> e, no seu provedor de domínio, crie um registro CNAME apontando para <code>SEU_USUARIO.github.io</code>.</li>
+    <li><strong>Atualizar na hora:</strong> Actions → Atualizar dados e publicar → Run workflow.</li>
+    <li><strong>Regras de classificação:</strong> ficam em <code>scraper/classificar.py</code>, em português, com testes.</li>
+  </ul>
+  <p>Publicou? Abra uma <i>issue</i> no projeto original contando: a cidade entra na lista "Cidades usando".</p>
+
+  <h2 id="como-foi-feito">Como foi feito</h2>
+  <p>Para quem quer entender ou adaptar. O projeto tem três peças: um coletor em Python, um gerador que classifica e calcula, e um site estático que só lê arquivos JSON. Tudo roda no GitHub Actions e é publicado no GitHub Pages.</p>
+
+  <h3>1. Coleta no SISCAM</h3>
+  <p>O SISCAM não tem API, então o coletor lê as mesmas páginas que qualquer pessoa vê. O caminho todo passa pela pesquisa avançada:</p>
+<pre><code>/Documentos/Pesquisa/80?Pesquisa=Avancada&amp;id=80&amp;Modulo=8
+   &amp;Documento=141            tipo (141 = Indicações em Rio Claro)
+   &amp;DataInicial=01/01/2025&amp;DataFinal=14/11/2026
+   &amp;AutoriaId=13            opcional: um autor
+   &amp;Pagina=1                15 itens por página</code></pre>
+  <ul>
+    <li>Os códigos de tipo mudam de cidade para cidade. Eles estão no <code>&lt;select name="Documento"&gt;</code> do formulário em <code>/index/80/8</code>; o <code>configurar.py</code> lê de lá.</li>
+    <li><strong>Duas passadas.</strong> Uma por tipo de documento, para ter o conteúdo. Outra por autor (<code>AutoriaId</code>), só para saber de quem é cada documento. Casar autor pelo nome não funciona: o nome impresso muda com o tempo (nome civil e nome parlamentar) e a mesma pessoa pode ter dois cadastros.</li>
+    <li>"Autoria" e "Coautoria" são campos separados na página. Os dois contam.</li>
+    <li>Respostas da Prefeitura e vetos são "sub-documentos" (módulo 87): cada um aponta para o documento principal.</li>
+    <li>Quem são os vereadores: a lista atual (<code>/vereadores</code>) mais qualquer autor do tipo vereador que tenha apresentado documento no período, o que traz suplentes e quem saiu.</li>
+  </ul>
+
+  <h3>2. Coleta no SAPL</h3>
+  <p>O SAPL tem API REST pública. O coletor usa <code>/api/materia/materialegislativa/</code>, <code>/api/base/autor/</code>, <code>/api/parlamentares/legislatura/&lt;id&gt;/parlamentares/</code>, <code>/api/sessao/registrovotacao/</code> e <code>/api/sessao/sessaoplenariapresenca/</code>. Por isso, em cidades com SAPL o radar também mostra presença nas sessões e o placar de cada votação.</p>
+
+  <h3>3. Coleta rápida todo dia</h3>
+  <p>A primeira coleta lê tudo desde a posse. As seguintes releem só os últimos 60 dias e os projetos de lei (que mudam de situação ao longo dos meses), e levam cerca de dois minutos. Uma vez por semana a coleta volta a ser completa, para pegar correções em documentos antigos.</p>
+
+  <h3>4. Legislaturas</h3>
+  <p>A posse é sempre em 1º de janeiro, a cada quatro anos. O coletor calcula sozinho qual é a legislatura vigente e guarda cada uma numa pasta (<code>dados/2025/</code>, <code>dados/2029/</code>…). Quando a legislatura vira, a anterior recebe uma última coleta e fica como arquivo, acessível pelo seletor no topo do site.</p>
+
+  <h3>5. Classificação</h3>
+  <div class="tabela"><table>
+    <thead><tr><th>Categoria</th><th>Regra</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Pedidos nos bairros</th><td>Indicações, e requerimentos que pedem um serviço (buraco, poda, limpeza, iluminação, sinalização).</td></tr>
+      <tr><th scope="row">Perguntas e cobranças</th><td>Requerimentos que pedem informação ou explicação.</td></tr>
+      <tr><th scope="row">Homenagens</th><td>Moções de congratulação, louvor e pesar, títulos, medalhas, nomes de rua, datas comemorativas.</td></tr>
+      <tr><th scope="row">Propostas de lei</th><td>Projetos de lei, de lei complementar e de emenda à Lei Orgânica que não são homenagem.</td></tr>
+      <tr><th scope="row">Outros</th><td>Moções de apoio, repúdio ou apelo, decretos legislativos e resoluções que não são homenagem.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Rua, bairro e tema do pedido também saem do texto. É por isso que o site avisa que a classificação pode errar, e todo item leva ao documento original.</p>
+
+  <h3>6. O que não deu para fazer</h3>
+  <p id="limites">Presença nas sessões depende de a Câmara publicar a lista de presença. No SAPL ela vem pela API. No SISCAM ela só existe dentro das atas, e o radar só mostra se o arquivo da ata for público.</p>
+
+  <h3 id="outro-sistema">E se a Câmara usar outro sistema?</h3>
+  <p>É preciso escrever um adaptador: um arquivo em <code>scraper/fontes/</code> que implemente a interface de <code>base.py</code> (<code>vereadores()</code>, <code>proposituras()</code> e, se houver, <code>votacoes()</code>, <code>respostas()</code>, <code>vetos()</code> e <code>sessoes()</code>) devolvendo o mesmo formato. O resto do projeto não muda. Os adaptadores do SISCAM e do SAPL servem de modelo.</p>
+</article>
+</main>
+
+<footer class="rodape"><div><p>Código sob licença MIT. Os dados são públicos e pertencem a cada Câmara Municipal.</p></div></footer>
+
+<script>
+(() => {
+  const raiz = document.documentElement;
+  let salvo = null;
+  try { salvo = localStorage.getItem("tema"); } catch {}
+  raiz.dataset.theme = salvo || (matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro");
+  document.getElementById("tema").addEventListener("click", () => {
+    const t = raiz.dataset.theme === "escuro" ? "claro" : "escuro";
+    raiz.dataset.theme = t;
+    try { localStorage.setItem("tema", t); } catch {}
+  });
+  fetch("../data/index.json").then(r => r.json()).then(async i => {
+    document.getElementById("marca").textContent = i.cidade.titulo;
+    if (i.cidade.repositorio) { const e = document.getElementById("repo"), l = document.createElement("a"); l.href = i.cidade.repositorio; l.textContent = "página do projeto no GitHub"; e.replaceWith(l); }
+    const r = await fetch(`../data/${i.atual}/radar.json`).then(x => x.json());
+    if (r.avisos && r.avisos.presenca) document.getElementById("limites").textContent += ` Em ${i.cidade.nome}: ${r.avisos.presenca}`;
+  }).catch(() => {});
+})();
+</script>
+</body>
+</html>

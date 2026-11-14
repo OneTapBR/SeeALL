@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 300" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="14"><rect width="860" height="300" rx="12" fill="#fff" stroke="#d0d7de"/><text x="24" y="34" fill="#59636e" font-weight="400">Code</text><text x="94" y="34" fill="#59636e" font-weight="400">Issues</text><text x="180" y="34" fill="#59636e" font-weight="400">Pull requests</text><text x="322" y="34" fill="#1f2328" font-weight="600">Actions</text><rect x="316" y="46" width="76" height="3" rx="1.5" fill="#fd8c73"/><rect x="310" y="12" width="88" height="32" rx="8" fill="none" stroke="#F5B700" stroke-width="3"/><text x="416" y="34" fill="#59636e" font-weight="400">Settings</text><line x1="0" y1="49.5" x2="860" y2="49.5" stroke="#d0d7de"/><circle cx="222" cy="14" r="13" fill="#1F4FD8"/><text x="222" y="19" fill="#fff" font-weight="700" text-anchor="middle">1</text>
+<text x="24" y="86" fill="#1f2328" font-weight="600">Actions</text>
+<text x="24" y="116" fill="#59636e">All workflows</text><text x="24" y="146" fill="#59636e">Atualizar dados e publicar</text>
+<rect x="14" y="160" width="220" height="30" rx="6" fill="#f6f8fa"/><text x="24" y="180" fill="#1f2328" font-weight="600">Configurar minha cidade</text>
+<rect x="10" y="156" width="228" height="38" rx="8" fill="none" stroke="#F5B700" stroke-width="3"/><circle cx="238" cy="156" r="13" fill="#1F4FD8"/><text x="238" y="161" fill="#fff" font-weight="700" text-anchor="middle">2</text>
+<line x1="260" y1="50" x2="260" y2="300" stroke="#d0d7de"/>
+<text x="284" y="88" fill="#1f2328" font-size="18" font-weight="600">Configurar minha cidade</text>
+<rect x="690" y="66" width="146" height="32" rx="6" fill="#f6f8fa" stroke="#d0d7de"/><text x="704" y="87" fill="#1f2328" font-weight="600">Run workflow  ▾</text>
+<rect x="684" y="60" width="158" height="44" rx="9" fill="none" stroke="#F5B700" stroke-width="3"/><circle cx="684" cy="60" r="13" fill="#1F4FD8"/><text x="684" y="65" fill="#fff" font-weight="700" text-anchor="middle">3</text>
+<rect x="500" y="112" width="336" height="172" rx="8" fill="#fff" stroke="#d0d7de"/>
+<text x="516" y="136" fill="#1f2328" font-size="12" font-weight="600">Endereço do sistema da câmara *</text>
+<rect x="516" y="144" width="304" height="28" rx="6" fill="#fff" stroke="#d0d7de"/><text x="526" y="163" fill="#1f2328" font-size="13">https://suacidade.siscam.com.br</text>
+<text x="516" y="192" fill="#1f2328" font-size="12" font-weight="600">Sigla do estado *</text>
+<rect x="516" y="200" width="304" height="28" rx="6" fill="#fff" stroke="#d0d7de"/><text x="526" y="219" fill="#1f2328" font-size="13">SP</text>
+<rect x="516" y="240" width="124" height="32" rx="6" fill="#1f883d"/><text x="530" y="261" fill="#fff" font-weight="600">Run workflow</text>
+<rect x="510" y="234" width="136" height="44" rx="9" fill="none" stroke="#F5B700" stroke-width="3"/><circle cx="646" cy="234" r="13" fill="#1F4FD8"/><text x="646" y="239" fill="#fff" font-weight="700" text-anchor="middle">4</text></svg>

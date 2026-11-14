@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- radar:meta -->
+<title>Radar Rio Claro — o que cada vereador fez desde a posse</title>
+<meta name="description" content="O que cada vereador de Rio Claro-SP apresentou desde a posse, contado todo dia a partir dos dados oficiais da Câmara.">
+<meta property="og:title" content="Radar Rio Claro">
+<meta property="og:description" content="O que cada vereador de Rio Claro-SP apresentou desde a posse, contado todo dia a partir dos dados oficiais da Câmara.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /radar:meta -->
+<meta name="theme-color" content="#1F4FD8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%231F4FD8'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23fff' stroke-width='2'/%3E%3Ccircle cx='21' cy='10' r='3' fill='%23F5B700'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Public+Sans:ital,wght@0,400..700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<header class="topo">
+  <a class="marca" href="#/" aria-label="Início">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" /><circle cx="16" cy="16" r="7.5" /><circle class="b" cx="21.5" cy="9.5" r="2.6" /></svg>
+    <span data-cidade="titulo">Radar da Câmara</span>
+  </a>
+  <div class="topo-acoes">
+    <span class="ao-vivo" id="atualizado">carregando…</span>
+    <label class="leg" id="leg-caixa" hidden><span class="sr">Legislatura</span><select id="leg"></select></label>
+    <button class="tema" id="tema" type="button" aria-label="Alternar tema claro ou escuro">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="sol" d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.66-5.66 1.41-1.41M4.93 19.07l1.41-1.41m11.32 0 1.41 1.41M4.93 4.93l1.41 1.41M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/><path class="lua" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="conteudo">
+  <p class="arquivo" id="arquivo" hidden></p>
+  <section class="hero">
+    <div class="hero-texto">
+      <h1 id="h1">O que os vereadores fizeram desde a&nbsp;posse.</h1>
+      <p class="lead">Dados oficiais da Câmara Municipal, conferidos todo dia. Cada número abre a lista completa, com o link pro documento original.</p>
+      <p class="frase" id="frase"></p>
+    </div>
+    <figure class="radar" id="radar" aria-label="Radar dos vereadores">
+      <svg viewBox="-205 -122 410 244" role="img" aria-labelledby="radar-legenda">
+        <defs>
+          <radialGradient id="g-fundo"><stop offset="0" stop-color="var(--radar-1)"/><stop offset="1" stop-color="var(--radar-2)"/></radialGradient>
+          <linearGradient id="g-varre" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--ambar)" stop-opacity="0"/><stop offset="1" stop-color="var(--ambar)" stop-opacity=".55"/></linearGradient>
+        </defs>
+        <circle r="104" fill="url(#g-fundo)"/>
+        <g class="aneis"><circle r="26"/><circle r="52"/><circle r="78"/><circle r="104"/><path d="M-104 0H104M0-104V104"/></g>
+        <g class="varredura"><path d="M0 0 L104 0 A104 104 0 0 0 73.5 -73.5 Z" fill="url(#g-varre)"/><path d="M0 0 L104 0" class="linha"/></g>
+        <g id="blips"></g>
+      </svg>
+      <figcaption id="radar-legenda">Cada ponto é um vereador em exercício. Quanto mais perto da borda, maior a fatia de homenagens em tudo o que ele apresentou. O número ao lado do nome é essa fatia. Toque num nome para ver o mandato.</figcaption>
+    </figure>
+  </section>
+
+  <button class="contador" id="contador" type="button" hidden>
+    <span class="cont-rot">Salários pagos com dinheiro público neste mês, até agora</span>
+    <strong class="cont-n" id="cont-n">R$ 0,00</strong>
+    <span class="cont-det" id="cont-det"></span>
+  </button>
+
+  <section class="bloco" id="propostas" aria-labelledby="t-propostas">
+    <div class="bloco-cab">
+      <h2 id="t-propostas">Trabalho ou homenagem?</h2>
+      <p id="sub-propostas">Tudo o que os vereadores apresentaram, separado pelo que cada documento faz.</p>
+    </div>
+    <div class="barra" id="barra" role="img"></div>
+    <div class="cats" id="cats"></div>
+  </section>
+
+  <section class="bloco" id="tempo" aria-labelledby="t-tempo">
+    <div class="bloco-cab">
+      <h2 id="t-tempo">Mês a mês</h2>
+      <p>Quantos documentos os vereadores apresentaram em cada mês, pelas mesmas cores. Toque numa barra para ver o mês.</p>
+    </div>
+    <div class="lt" id="lt-geral"></div>
+    <div class="legenda" id="lt-legenda"></div>
+  </section>
+
+  <section class="bloco duas" aria-label="Votações e ruas">
+    <div class="painel" id="votos">
+      <h2>Votações em plenário</h2>
+      <div class="votos-num"><strong id="pct-unan">–</strong><span id="txt-unan"></span></div>
+      <p class="nota" id="nota-votos"></p>
+      <button class="link" id="ver-divididas" type="button">Ver as votações com voto contrário</button>
+    </div>
+    <div class="painel" id="ruas">
+      <h2>Ruas que mais aparecem nos pedidos</h2>
+      <ol class="ruas" id="lista-ruas"></ol>
+      <button class="link" id="mais-ruas" type="button">Ver mais ruas</button>
+    </div>
+  </section>
+
+  <section class="bloco" id="repetidos-bloco" aria-labelledby="t-rep" hidden>
+    <div class="bloco-cab">
+      <h2 id="t-rep">Pediram de novo. E de novo.</h2>
+      <p>O mesmo tipo de serviço, pedido três vezes ou mais no mesmo endereço. Pedido repetido costuma ser sinal de problema que não foi resolvido.</p>
+    </div>
+    <div class="repetidos" id="repetidos"></div>
+    <button class="link" id="mais-rep" type="button">Ver mais pedidos repetidos</button>
+  </section>
+
+  <section class="bloco" id="temas-bloco" aria-labelledby="t-temas">
+    <div class="bloco-cab">
+      <h2 id="t-temas">O que a cidade mais pede pelos vereadores</h2>
+      <p>Pedidos de melhoria nos bairros, agrupados pelo assunto. A Prefeitura decide se faz.</p>
+    </div>
+    <div class="temas" id="temas"></div>
+  </section>
+
+  <section class="bloco" id="dinheiro" aria-labelledby="t-din" hidden>
+    <div class="bloco-cab linha">
+      <div>
+        <h2 id="t-din">O dinheiro da cidade</h2>
+        <p id="sub-din">De onde veio e para onde foi, pelos dados que a Prefeitura e a Câmara enviam ao Tribunal de Contas do Estado.</p>
+      </div>
+      <label class="ordem"><span class="sr">Ano</span><select id="din-ano"></select></label>
+    </div>
+    <div class="pref" id="din"></div>
+  </section>
+
+  <section class="bloco" id="prefeitura" aria-labelledby="t-pref" hidden>
+    <div class="bloco-cab">
+      <h2 id="t-pref">A Prefeitura responde?</h2>
+      <p id="sub-pref">O que o Executivo fez com o que saiu da Câmara: os requerimentos dos vereadores, os vetos e os projetos que o próprio prefeito mandou.</p>
+    </div>
+    <div id="card-prefeito"></div>
+    <div class="pref" id="pref"></div>
+  </section>
+
+  <section class="bloco" id="presenca" aria-labelledby="t-pres" hidden>
+    <div class="bloco-cab">
+      <h2 id="t-pres">Presença nas sessões</h2>
+      <p id="sub-pres"></p>
+    </div>
+    <div class="duas">
+      <div class="painel"><h3>Por vereador</h3><div class="pres-lista" id="pres-lista"></div></div>
+      <div class="painel"><h3>Sessão por sessão</h3><div class="pres-cal" id="pres-cal"></div><p class="nota">Cada quadrado é uma sessão. Quanto mais escuro, mais faltas. Toque para ver quem faltou.</p></div>
+    </div>
+  </section>
+
+  <section class="bloco" id="vereadores" aria-labelledby="t-ver">
+    <div class="bloco-cab linha">
+      <div>
+        <h2 id="t-ver">Um por um</h2>
+        <p>Inclui documentos em que o vereador é coautor.</p>
+      </div>
+      <div class="filtros">
+        <label class="busca"><span class="sr">Buscar vereador</span><input id="busca-ver" type="search" placeholder="Buscar por nome ou partido"></label>
+        <label class="ordem"><span class="sr">Ordenar</span>
+          <select id="ordem">
+            <option value="total">Mais documentos</option>
+            <option value="lei">Mais propostas de lei</option>
+            <option value="homenagem">Mais homenagens</option>
+            <option value="bairro">Mais pedidos nos bairros</option>
+            <option value="cobranca">Mais perguntas e cobranças</option>
+            <option value="razao">Mais homenagens por lei</option>
+            <option value="nome">Nome (A–Z)</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="grade" id="grade"></div>
+  </section>
+</main>
+
+<footer class="rodape">
+  <div>
+    <p><strong>De onde vêm os números.</strong> Todo dia, um robô lê o sistema oficial da Câmara (<a id="link-fonte" href="#" rel="noopener">sistema da Câmara</a>) e recalcula tudo. Nada aqui é digitado à mão. São dados públicos, e cada item do site tem o link para o documento original.</p>
+    <p><strong>Como separamos.</strong> Indicações e requerimentos que pedem um serviço (tapar buraco, poda, limpeza, iluminação, sinalização) viram pedidos de melhoria nos bairros. Requerimentos que pedem informação ou explicação viram perguntas e cobranças. Moções de congratulação, louvor e pesar, títulos, medalhas, nomes de rua e datas comemorativas viram homenagens. Projetos que criam regra, programa ou obrigação viram propostas de lei. Moções de apoio ou repúdio e regras internas da Câmara ficam em outros.</p>
+    <p><strong>Pode ter erro.</strong> A classificação é automática, feita pelo texto do assunto de cada documento, e pode errar. O nome da rua e do bairro também é lido do texto. Se o número parecer estranho, abra o documento original e confira.</p>
+    <p><strong>Quem conta como autor.</strong> O vereador entra na conta quando aparece na autoria publicada do documento, como autor ou coautor. Documentos marcados como excluídos pela Câmara não entram. Suplentes e ex-vereadores aparecem quando apresentaram algo no período.</p>
+    <p id="aviso-dinheiro" hidden><strong>Sobre o dinheiro.</strong> Receitas e despesas vêm dos dados abertos do <a href="https://transparencia.tce.sp.gov.br/" rel="noopener">Tribunal de Contas do Estado de São Paulo</a>, que publica com cerca de dois meses de atraso. O tribunal informa quem recebeu cada pagamento, mas não o que foi comprado. A folha de pagamento é o que cada órgão pagou a si mesmo ou a "folha de pagamento"; não há salário por pessoa nessa fonte. O contador reparte a folha do último mês publicado ao longo do mês atual: é uma estimativa.</p>
+    <p id="aviso-presenca" hidden></p>
+    <p>Projeto independente, sem ligação com partidos, com a Prefeitura ou com a Câmara. Código aberto: <a href="como-fazer/">veja como publicar o radar da sua cidade</a><span id="link-repo"></span>.</p>
+  </div>
+</footer>
+
+<div class="folha" id="folha" hidden>
+  <div class="folha-fundo" data-fechar></div>
+  <section class="folha-corpo" role="dialog" aria-modal="true" aria-labelledby="folha-titulo">
+    <header class="folha-cab">
+      <h2 id="folha-titulo"></h2>
+      <button type="button" class="fechar" data-fechar aria-label="Fechar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </header>
+    <div class="folha-conteudo" id="folha-conteudo"></div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

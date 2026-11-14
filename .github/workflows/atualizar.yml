@@ -1,0 +1,99 @@
+name: Atualizar dados e publicar
+
+on:
+  schedule:
+    - cron: "17 9 * * *"    # todo dia às 06:17 de Brasília
+  workflow_dispatch:         # botão "Run workflow" para rodar na hora
+    inputs:
+      completa:
+        description: "Coletar tudo desde a posse (demora mais)"
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths-ignore: ["**.md", "docs/**", "exemplos/**", "LICENSE"]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: radar
+  cancel-in-progress: false
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scraper/requirements.txt
+
+      - name: Instalar dependências
+        run: pip install -r scraper/requirements.txt
+
+      - name: Testes
+        run: python -m pytest -q tests
+
+      # No agendamento e no botão: coleta incremental (últimos 60 dias + projetos em tramitação);
+      # uma vez por semana ela vira completa sozinha. Num push, só coleta se ainda não houver
+      # dados desta cidade (primeira publicação de um repositório novo).
+      - name: Coletar dados da Câmara
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            python scraper/coletar.py --se-necessario
+          elif [ "${{ inputs.completa }}" = "true" ]; then
+            python scraper/coletar.py --completa
+          else
+            python scraper/coletar.py
+          fi
+
+      # Receitas e despesas (TCE-SP). Se o tribunal estiver fora do ar, o site sai com os dados anteriores.
+      - name: Coletar finanças do município
+        if: github.event_name != 'push'
+        continue-on-error: true
+        run: python scraper/financas.py
+
+      # Publicação: GitHub Pages em repositório público; Cloudflare Pages se os segredos
+      # CLOUDFLARE_* estiverem configurados (é o caminho para repositório privado, ver docs/PUBLICAR.md).
+      - id: pages
+        if: ${{ !github.event.repository.private }}
+        uses: actions/configure-pages@v5
+
+      - name: Gerar números, páginas e cartões do site
+        env:
+          SITE_URL: ${{ vars.SITE_URL || steps.pages.outputs.base_url }}
+        run: python scraper/gerar.py
+
+      - name: Salvar dados no repositório
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "radar-bot@users.noreply.github.com"
+          git add dados site/index.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Dados atualizados $(TZ=America/Sao_Paulo date +%d/%m/%Y)"
+            git pull --rebase --autostash
+            git push
+          fi
+
+      - uses: actions/upload-pages-artifact@v3
+        if: ${{ !github.event.repository.private }}
+        with:
+          path: site
+
+      - id: deploy
+        if: ${{ !github.event.repository.private }}
+        uses: actions/deploy-pages@v4
+
+      - name: Publicar na Cloudflare Pages
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && vars.CLOUDFLARE_PROJECT != '' }}
+        run: npx --yes wrangler@4 pages deploy site --project-name="${{ vars.CLOUDFLARE_PROJECT }}" --branch=main --commit-dirty=true

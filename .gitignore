@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# gerados pelo scraper/gerar.py a cada publicacao
+site/data/
+site/og/
+site/v/
+site/CNAME
+.claude/
